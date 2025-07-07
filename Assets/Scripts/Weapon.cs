@@ -56,11 +56,14 @@ public class Weapon : MonoBehaviour
 
     void AimIn()
     {
-        animator.SetBool("isAiming", true);
+        //animator.SetBool("isAiming", true);
+        animator.SetLayerWeight(1, 1f);
+
     }
     void AimOut()
     {
-        animator.SetBool("isAiming", false);
+        //animator.SetBool("isAiming", false);
+        animator.SetLayerWeight(1, 0f);
     }
 
     void Shoot()

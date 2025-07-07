@@ -33,6 +33,11 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public void OnDamageTaken()
+    {
+        isProvoked = true;
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -75,8 +80,10 @@ public class EnemyController : MonoBehaviour
 
     void CheckVelocity()
     {
-        float averageSpeed = (navMeshAgent.velocity.x + navMeshAgent.velocity.z) / 2;
-        GetComponentInChildren<Animator>().SetFloat("MoveSpeed", averageSpeed);
+        Vector3 averageSpeed = new Vector3(navMeshAgent.velocity.x, 0, navMeshAgent.velocity.z);
+        float speed = averageSpeed.magnitude;
+
+        GetComponentInChildren<Animator>().SetFloat("MoveSpeed", speed);
     }
 }
 
