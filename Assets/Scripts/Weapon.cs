@@ -56,14 +56,24 @@ public class Weapon : MonoBehaviour
 
     void AimIn()
     {
-        //animator.SetBool("isAiming", true);
         animator.SetLayerWeight(1, 1f);
+
+        // Smoothly blend the weight
+        //float currentAimWeight = Mathf.MoveTowards(0f, 1f, Time.deltaTime);
+        //animator.SetLayerWeight(1, currentAimWeight);
+
+        animator.SetBool("isAiming", true);
 
     }
     void AimOut()
     {
-        //animator.SetBool("isAiming", false);
         animator.SetLayerWeight(1, 0f);
+
+        // Smoothly blend the weight
+        //float currentAimWeight = Mathf.MoveTowards(1f, 0f, Time.deltaTime);
+        //animator.SetLayerWeight(1, currentAimWeight);
+
+        animator.SetBool("isAiming", false);
     }
 
     void Shoot()
