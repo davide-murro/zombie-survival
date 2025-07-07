@@ -5,10 +5,11 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField] Transform target;
     [SerializeField] float chaseRange = 10f;
+    [SerializeField] float turnSpeed = 5f;
 
     NavMeshAgent navMeshAgent;
-    float distanceToTarget = Mathf.Infinity;
 
+    float distanceToTarget = Mathf.Infinity;
     bool isProvoked = false;
 
     // Start is called before the first frame update
@@ -40,6 +41,9 @@ public class EnemyController : MonoBehaviour
 
     void EngageTarget()
     {
+        FaceTarget();
+        CheckVelocity();
+
         if (distanceToTarget >= navMeshAgent.stoppingDistance)
         {
             ChaseTarget();
@@ -58,7 +62,21 @@ public class EnemyController : MonoBehaviour
 
     void AttackTarget()
     {
-        Debug.Log(name + " has seeked and is destroying " + target.name);
+        GetComponentInChildren<Animator>().SetTrigger("Attack");
+        //Debug.Log(name + " has seeked and is destroying " + target.name);
+    }
+
+    void FaceTarget()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, turnSpeed * Time.deltaTime);
+    }
+
+    void CheckVelocity()
+    {
+        float averageSpeed = (navMeshAgent.velocity.x + navMeshAgent.velocity.z) / 2;
+        GetComponentInChildren<Animator>().SetFloat("MoveSpeed", averageSpeed);
     }
 }
 

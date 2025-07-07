@@ -34,7 +34,7 @@ public class Weapon : MonoBehaviour
     void Update()
     {
         // aim
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetButton("Fire2"))
         {
             AimIn();
         }
@@ -56,14 +56,11 @@ public class Weapon : MonoBehaviour
 
     void AimIn()
     {
-        if (animator.GetBool("isAiming") == false)
-            animator.SetBool("isAiming", true);
+        animator.SetBool("isAiming", true);
     }
     void AimOut()
     {
-        Debug.Log("cccc");
-        if (animator.GetBool("isAiming") == true)
-            animator.SetBool("isAiming", false);
+        animator.SetBool("isAiming", false);
     }
 
     void Shoot()
@@ -73,7 +70,7 @@ public class Weapon : MonoBehaviour
             animator.SetTrigger("shoot");
             ProcessRaycast();
             ProcessRecoil();
-            PlayMuzzleFlas();
+            PlayMuzzleFlash();
             nextFireTime = Time.time + fireRate;
         }
     }
@@ -106,7 +103,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    void PlayMuzzleFlas()
+    void PlayMuzzleFlash()
     {
         if (muzzleFlash != null)
         {
