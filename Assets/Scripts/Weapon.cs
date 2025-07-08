@@ -10,36 +10,40 @@ public enum FireMode
 public class Weapon : MonoBehaviour
 {
     [SerializeField] Camera FPCamera;   // First person camera
-
-    [SerializeField] FireMode fireMode = FireMode.Single;
-    [SerializeField] float fireRate = 0.1f;
-
-    [SerializeField] float range = 100f;
-
-    [SerializeField] float damage = 20f;
+    [SerializeField] CinemachineCamera cinemachineCamera;    // impulse for recoil
+    [SerializeField] CinemachineImpulseSource impulseSource;    // impulse for recoil
+    [SerializeField] Animator animator;
 
     [SerializeField] ParticleSystem muzzleFlash;    // particle for the shooting
     [SerializeField] GameObject bulletImpact;    // target impact effect
-    [SerializeField] CinemachineImpulseSource impulseSource;    // impulse for recoil
-    [SerializeField] Animator animator;
+    [SerializeField] FireMode fireMode = FireMode.Single;
+    [SerializeField] float fireRate = 0.1f;
+    [SerializeField] float range = 100f;
+    [SerializeField] float damage = 20f;
+
+    [SerializeField] float defaultZoom = 40f;
+    [SerializeField] float aimZoom = 30f;
+    [SerializeField] GameObject crossHairCanvas;
+
+    [SerializeField] Ammo ammoSlot;    // ammo slot
+    [SerializeField] AmmoType ammoType;    // ammo type it needs
+    [SerializeField] int ammoPerShoot = 1;
 
     float nextFireTime = 0f;
 
     bool isAiming = false;
     float currentWeight = 0f;
-    float animationTransitionDuration = 0.2f;
-    float aimTransitionSpeed;
+    float aimTransitionSpeed = 5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        aimTransitionSpeed = 1f / animationTransitionDuration;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // aim
+        // aim logig
         if (Input.GetMouseButton(1))
         {
             isAiming = true;
@@ -48,8 +52,7 @@ public class Weapon : MonoBehaviour
         {
             isAiming = false;
         }
-
-        Aim();
+        UpdateAim();
 
         // shooting logic
         if (fireMode == FireMode.Single && Input.GetButtonDown("Fire1"))
@@ -62,35 +65,54 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    void Aim()
+    void UpdateAim()
     {
         float targetWeight;
+        float targetAimZoom;
 
         if (isAiming)
         {
             targetWeight = 1f;
+            crossHairCanvas.SetActive(false);
+            targetAimZoom = aimZoom; 
         }
         else
         {
             targetWeight = 0f;
+            crossHairCanvas.SetActive(true);
+            targetAimZoom = defaultZoom;
         }
 
         currentWeight = Mathf.MoveTowards(currentWeight, targetWeight, aimTransitionSpeed * Time.deltaTime);
+        cinemachineCamera.Lens.FieldOfView = Mathf.Lerp(cinemachineCamera.Lens.FieldOfView, targetAimZoom, aimTransitionSpeed * Time.deltaTime);
 
         animator.SetLayerWeight(1, currentWeight);
     }
 
     void Shoot()
     {
-        if (Time.time >= nextFireTime)
+        // check fire rate
+        if (Time.time < nextFireTime) return;
+
+        // check ammo
+        if (ammoType != AmmoType.None)
         {
-            animator.Play("Gun_shoot", 0, 0f);
-            animator.SetTrigger("shoot");
-            ProcessRaycast();
-            ProcessRecoil();
-            PlayMuzzleFlash();
-            nextFireTime = Time.time + fireRate;
+            if (ammoSlot.GetCurrentAmmo(ammoType) <= 0) return;
+
+            int ammoToUse = ammoPerShoot;
+            if (ammoSlot.GetCurrentAmmo(ammoType) - ammoToUse < 0) ammoToUse = ammoSlot.GetCurrentAmmo(ammoType);
+            ammoSlot.UseAmmo(ammoType, ammoToUse);
         }
+
+        // animation
+        //animator.Play("Gun_shoot", 0, 0f);
+        animator.ResetTrigger("shoot");
+        animator.SetTrigger("shoot");
+        ProcessRaycast();
+        ProcessRecoil();
+        PlayMuzzleFlash();
+
+        nextFireTime = Time.time + fireRate;
     }
 
     void ProcessRaycast()
