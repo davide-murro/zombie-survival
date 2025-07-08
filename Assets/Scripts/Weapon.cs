@@ -25,25 +25,33 @@ public class Weapon : MonoBehaviour
 
     float nextFireTime = 0f;
 
+    bool isAiming = false;
+    float currentWeight = 0f;
+    float animationTransitionDuration = 0.2f;
+    float aimTransitionSpeed;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        aimTransitionSpeed = 1f / animationTransitionDuration;
     }
 
     // Update is called once per frame
     void Update()
     {
         // aim
-        if (Input.GetButton("Fire2"))
+        if (Input.GetMouseButton(1))
         {
-            AimIn();
+            isAiming = true;
         }
         else
         {
-            AimOut();
+            isAiming = false;
         }
 
-        // shoot
+        Aim();
+
+        // shooting logic
         if (fireMode == FireMode.Single && Input.GetButtonDown("Fire1"))
         {
             Shoot();
@@ -54,32 +62,29 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    void AimIn()
+    void Aim()
     {
-        animator.SetLayerWeight(1, 1f);
+        float targetWeight;
 
-        // Smoothly blend the weight
-        //float currentAimWeight = Mathf.MoveTowards(0f, 1f, Time.deltaTime);
-        //animator.SetLayerWeight(1, currentAimWeight);
+        if (isAiming)
+        {
+            targetWeight = 1f;
+        }
+        else
+        {
+            targetWeight = 0f;
+        }
 
-        animator.SetBool("isAiming", true);
+        currentWeight = Mathf.MoveTowards(currentWeight, targetWeight, aimTransitionSpeed * Time.deltaTime);
 
-    }
-    void AimOut()
-    {
-        animator.SetLayerWeight(1, 0f);
-
-        // Smoothly blend the weight
-        //float currentAimWeight = Mathf.MoveTowards(1f, 0f, Time.deltaTime);
-        //animator.SetLayerWeight(1, currentAimWeight);
-
-        animator.SetBool("isAiming", false);
+        animator.SetLayerWeight(1, currentWeight);
     }
 
     void Shoot()
     {
         if (Time.time >= nextFireTime)
         {
+            animator.Play("Gun_shoot", 0, 0f);
             animator.SetTrigger("shoot");
             ProcessRaycast();
             ProcessRecoil();
