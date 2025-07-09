@@ -30,8 +30,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] TextMeshProUGUI ammoTextbox;
 
     CinemachineCamera cinemachineCamera;
-    Animator animator;
     CinemachineImpulseSource impulseSource;    // impulse for recoil
+    Animator animator;
 
     [HideInInspector] public bool canShoot = true;
 
@@ -44,6 +44,7 @@ public class Weapon : MonoBehaviour
     {
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
         animator = GetComponent<Animator>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -105,7 +106,6 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
-        Debug.Log(canShoot);
         // check if it can shoot
         if (!canShoot) return;
 
