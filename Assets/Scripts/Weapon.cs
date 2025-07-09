@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -9,11 +10,7 @@ public enum FireMode
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] Camera FPCamera;   // First person camera
-    [SerializeField] CinemachineCamera cinemachineCamera;    // impulse for recoil
-    [SerializeField] CinemachineImpulseSource impulseSource;    // impulse for recoil
-    [SerializeField] Animator animator;
-
+    [Header("Shoot / Fire")]
     [SerializeField] ParticleSystem muzzleFlash;    // particle for the shooting
     [SerializeField] GameObject bulletImpact;    // target impact effect
     [SerializeField] FireMode fireMode = FireMode.Single;
@@ -21,19 +18,33 @@ public class Weapon : MonoBehaviour
     [SerializeField] float range = 100f;
     [SerializeField] float damage = 20f;
 
+    [Header("Aim / Zoom")]
     [SerializeField] float defaultZoom = 40f;
     [SerializeField] float aimZoom = 30f;
-    [SerializeField] GameObject crossHairCanvas;
+    [SerializeField] Canvas crossHairCanvas;
 
+    [Header("Ammo")]
     [SerializeField] Ammo ammoSlot;    // ammo slot
     [SerializeField] AmmoType ammoType;    // ammo type it needs
     [SerializeField] int ammoPerShoot = 1;
+    [SerializeField] TextMeshProUGUI ammoTextbox;
+
+    CinemachineCamera cinemachineCamera;
+    Animator animator;
+    CinemachineImpulseSource impulseSource;    // impulse for recoil
+
+    [HideInInspector] public bool canShoot = true;
 
     float nextFireTime = 0f;
-
     bool isAiming = false;
     float currentWeight = 0f;
     float aimTransitionSpeed = 5f;
+
+    void Awake()
+    {
+        cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
+        animator = GetComponent<Animator>();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,6 +74,9 @@ public class Weapon : MonoBehaviour
         {
             Shoot();
         }
+
+        // ammo
+        DisplayAmmo();
     }
 
     void UpdateAim()
@@ -73,13 +87,13 @@ public class Weapon : MonoBehaviour
         if (isAiming)
         {
             targetWeight = 1f;
-            crossHairCanvas.SetActive(false);
+            crossHairCanvas.gameObject.SetActive(false);
             targetAimZoom = aimZoom; 
         }
         else
         {
             targetWeight = 0f;
-            crossHairCanvas.SetActive(true);
+            crossHairCanvas.gameObject.SetActive(true);
             targetAimZoom = defaultZoom;
         }
 
@@ -91,6 +105,10 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
+        Debug.Log(canShoot);
+        // check if it can shoot
+        if (!canShoot) return;
+
         // check fire rate
         if (Time.time < nextFireTime) return;
 
@@ -101,7 +119,7 @@ public class Weapon : MonoBehaviour
 
             int ammoToUse = ammoPerShoot;
             if (ammoSlot.GetCurrentAmmo(ammoType) - ammoToUse < 0) ammoToUse = ammoSlot.GetCurrentAmmo(ammoType);
-            ammoSlot.UseAmmo(ammoType, ammoToUse);
+            ammoSlot.ReduceCurrentAmmo(ammoType, ammoToUse);
         }
 
         // animation
@@ -119,7 +137,7 @@ public class Weapon : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(FPCamera.transform.position, FPCamera.transform.forward, out hit, range))
+        if (Physics.Raycast(cinemachineCamera.transform.position, cinemachineCamera.transform.forward, out hit, range))
         {
             Debug.Log("Hit this thing: " + hit.transform.name);
 
@@ -157,6 +175,19 @@ public class Weapon : MonoBehaviour
         {
             GameObject impact = Instantiate(bulletImpact, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(impact, 0.1f);
+        }
+    }
+
+    void DisplayAmmo()
+    {
+        if (ammoSlot)
+        {
+            int currentAmmo = ammoSlot.GetCurrentAmmo(ammoType);
+            ammoTextbox.text = currentAmmo.ToString();
+        }
+        else
+        {
+            ammoTextbox.text = "";
         }
     }
 }

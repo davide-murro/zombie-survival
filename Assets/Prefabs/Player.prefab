@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7865237920655899415}
   - component: {fileID: 5031138201564578535}
   - component: {fileID: 8088728124497785729}
+  - component: {fileID: 3138353935380119817}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -254,6 +255,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverCanvas: {fileID: 0}
+--- !u!114 &3138353935380119817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737447780200794397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01c2f42f8da9aee4ea4d2f1d2dcede28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ammoSlots:
+  - ammoType: 1
+    ammoAmount: 20
+  - ammoType: 2
+    ammoAmount: 50
+  - ammoType: 3
+    ammoAmount: 20
 --- !u!1 &5038620188827206845
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6265270625723945654}
+  - component: {fileID: 5838220366602944395}
   m_Layer: 0
   m_Name: Weapons
   m_TagString: Untagged
@@ -429,8 +450,22 @@ Transform:
   - {fileID: 1005510103077001022}
   - {fileID: 4181427401260432242}
   - {fileID: 5370371891465046888}
+  - {fileID: 4100454252958147106}
   m_Father: {fileID: 7366460557785031008}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5838220366602944395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6353957119178029861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8dfb0e2cbc2084aa30ef03941bb726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentWeaponIndex: 0
 --- !u!1001 &1261268659495829021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -531,9 +566,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5786097810451525583, guid: 260ff1508afea5241b6511d8fbe92201, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1040079982010630565}
-    - targetCorrespondingSourceObject: {fileID: 5786097810451525583, guid: 260ff1508afea5241b6511d8fbe92201, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7067871897132200426}
   m_SourcePrefab: {fileID: 100100000, guid: 260ff1508afea5241b6511d8fbe92201, type: 3}
 --- !u!1 &4741362852461547986 stripped
 GameObject:
@@ -574,18 +606,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1289169e6f94469498a0f5d7c3abe7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FPCamera: {fileID: 7366460557785031015}
-  cinemachineCamera: {fileID: 0}
-  impulseSource: {fileID: 1040079982010630565}
-  animator: {fileID: 0}
   muzzleFlash: {fileID: 2012383917598064015}
   bulletImpact: {fileID: 3073334848392643486, guid: ea1779f85d07b214985ad42a0aed6adb, type: 3}
   fireMode: 1
-  fireRate: 0.1
+  fireRate: 0.2
   range: 100
-  damage: 20
+  damage: 15
+  defaultZoom: 40
   aimZoom: 10
-  ammoSlot: {fileID: 7067871897132200426}
+  crossHairCanvas: {fileID: 0}
+  ammoSlot: {fileID: 3138353935380119817}
+  ammoType: 2
   ammoPerShoot: 1
 --- !u!114 &1040079982010630565
 MonoBehaviour:
@@ -640,19 +671,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: 0.1, z: 0}
---- !u!114 &7067871897132200426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4741362852461547986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01c2f42f8da9aee4ea4d2f1d2dcede28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ammoAmount: 30
 --- !u!4 &5370371891465046888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6559362985659250037, guid: 260ff1508afea5241b6511d8fbe92201, type: 3}
@@ -737,11 +755,6 @@ PrefabInstance:
 --- !u!4 &7366460557785031008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
-  m_PrefabInstance: {fileID: 1928126282838187650}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &7366460557785031015 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 9005220659476430821, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
   m_PrefabInstance: {fileID: 1928126282838187650}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5530375512621384570
@@ -1017,23 +1030,96 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1289169e6f94469498a0f5d7c3abe7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FPCamera: {fileID: 7366460557785031015}
-  cinemachineCamera: {fileID: 0}
-  impulseSource: {fileID: 0}
-  animator: {fileID: 0}
   muzzleFlash: {fileID: 0}
   bulletImpact: {fileID: 0}
   fireMode: 0
-  fireRate: 0.1
+  fireRate: 1
   range: 5
-  damage: 20
+  damage: 50
+  defaultZoom: 40
   aimZoom: 10
+  crossHairCanvas: {fileID: 0}
   ammoSlot: {fileID: 0}
+  ammoType: 0
   ammoPerShoot: 0
 --- !u!4 &1005510103077001022 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5920628141422906895, guid: c1ab9abedc9d80f4a9109fe99b4ea8d4, type: 3}
   m_PrefabInstance: {fileID: 6907961015167162673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7955080312668359833
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6265270625723945654}
+    m_Modifications:
+    - target: {fileID: 2464475600570041086, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: ammoSlot
+      value: 
+      objectReference: {fileID: 3138353935380119817}
+    - target: {fileID: 2464475600570041086, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: muzzleFlash
+      value: 
+      objectReference: {fileID: 2012383917598064015}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758340239048193025, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_Name
+      value: ShotGun_B
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758340239048193025, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+--- !u!4 &4100454252958147106 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6233441546595888827, guid: 8dd42cfce9fbf934e97313e180757b63, type: 3}
+  m_PrefabInstance: {fileID: 7955080312668359833}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8119551205159038840
 PrefabInstance:
@@ -1194,9 +1280,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4965438261709640327, guid: a35b8c32acba1334b9b31dfe8cdbc9be, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7049524369988319896}
-    - targetCorrespondingSourceObject: {fileID: 4965438261709640327, guid: a35b8c32acba1334b9b31dfe8cdbc9be, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1157923969734609748}
   m_SourcePrefab: {fileID: 100100000, guid: a35b8c32acba1334b9b31dfe8cdbc9be, type: 3}
 --- !u!1 &3552419529693209032 stripped
 GameObject:
@@ -1237,18 +1320,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1289169e6f94469498a0f5d7c3abe7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FPCamera: {fileID: 7366460557785031015}
-  cinemachineCamera: {fileID: 0}
-  impulseSource: {fileID: 7049524369988319896}
-  animator: {fileID: 8047811091101946695}
   muzzleFlash: {fileID: 2881401568596087181}
   bulletImpact: {fileID: 3073334848392643486, guid: ea1779f85d07b214985ad42a0aed6adb, type: 3}
   fireMode: 0
-  fireRate: 1
+  fireRate: 0.7
   range: 50
   damage: 20
-  aimZoom: 10
-  ammoSlot: {fileID: 1157923969734609748}
+  defaultZoom: 40
+  aimZoom: 30
+  crossHairCanvas: {fileID: 0}
+  ammoSlot: {fileID: 3138353935380119817}
+  ammoType: 1
   ammoPerShoot: 1
 --- !u!114 &7049524369988319896
 MonoBehaviour:
@@ -1303,19 +1385,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: 0.3, z: 0}
---- !u!114 &1157923969734609748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3552419529693209032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01c2f42f8da9aee4ea4d2f1d2dcede28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ammoAmount: 40
 --- !u!4 &4181427401260432242 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5738456080911321149, guid: a35b8c32acba1334b9b31dfe8cdbc9be, type: 3}

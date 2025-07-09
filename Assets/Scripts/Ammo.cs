@@ -30,8 +30,13 @@ public class Ammo : MonoBehaviour
         return GetAmmoSlot(type).ammoAmount;
     }
 
-    public void UseAmmo(AmmoType type, int amount)
+    public void ReduceCurrentAmmo(AmmoType type, int amount)
     {
         GetAmmoSlot(type).ammoAmount -= amount;
+    }
+
+    public void IncreaseCurrentAmmo(AmmoType type, int amount)
+    {
+        GetAmmoSlot(type).ammoAmount += amount;
     }
 }

@@ -3,11 +3,14 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] Transform target;
     [SerializeField] float chaseRange = 10f;
     [SerializeField] float turnSpeed = 5f;
 
+    Transform target;
+
     NavMeshAgent navMeshAgent;
+    EnemyHealth enemyHealth;
+    EnemyAttack enemyAttack;
 
     float distanceToTarget = Mathf.Infinity;
     bool isProvoked = false;
@@ -15,12 +18,23 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        target = FindFirstObjectByType<PlayerHealth>().transform;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        enemyHealth = GetComponent<EnemyHealth>();
+        enemyAttack = GetComponent<EnemyAttack>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enemyHealth.IsDead)
+        {
+            enabled = false;
+            enemyAttack.enabled = false;
+            navMeshAgent.enabled = false;
+            return;
+        }
+
         distanceToTarget = Vector3.Distance(target.position, transform.position);
 
         if (isProvoked)
@@ -62,7 +76,8 @@ public class EnemyController : MonoBehaviour
 
     void ChaseTarget()
     {
-        navMeshAgent.SetDestination(target.position);
+        if (navMeshAgent && navMeshAgent.enabled)
+            navMeshAgent.SetDestination(target.position);
     }
 
     void AttackTarget()

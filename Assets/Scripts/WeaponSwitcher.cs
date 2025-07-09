@@ -48,6 +48,7 @@ public class WeaponSwitcher : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentWeaponIndex = 0;
         else if (Input.GetKeyDown(KeyCode.Alpha2)) currentWeaponIndex = 1;
         else if (Input.GetKeyDown(KeyCode.Alpha3)) currentWeaponIndex = 2;
+        else if (Input.GetKeyDown(KeyCode.Alpha4)) currentWeaponIndex = 3;
     }
     void ProcessScrollWheelInput()
     {
