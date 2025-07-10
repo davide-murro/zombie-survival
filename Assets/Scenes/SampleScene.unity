@@ -3409,6 +3409,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 486277369330978180, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 592909059402822324, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -3447,7 +3451,7 @@ PrefabInstance:
       objectReference: {fileID: 195560809}
     - target: {fileID: 3552419529693209032, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4147485277149990942, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
       propertyPath: m_CameraType

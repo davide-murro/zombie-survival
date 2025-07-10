@@ -4,85 +4,63 @@ using UnityEngine;
 public class WeaponSwitcher : MonoBehaviour
 {
     [SerializeField] int currentWeaponIndex = 0;
+    int previousWeaponIndex;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        DisableAllWeapon();
         SetWeaponActive();
     }
 
     // Update is called once per frame
     void Update()
     {
-        int previousWeaponIndex = currentWeaponIndex;
+        previousWeaponIndex = currentWeaponIndex;
 
         ProcessKeyInput();
         ProcessScrollWheelInput();
 
         if (previousWeaponIndex != currentWeaponIndex)
         {
-            StartCoroutine(SwitchWeaponRoutine(previousWeaponIndex, currentWeaponIndex));
-            //SetWeaponActive();
+            StartCoroutine(SwitchWeaponRoutine());
         }
     }
 
-    IEnumerator SwitchWeaponRoutine(int prevIndex, int newIndex)
+    void DisableAllWeapon()
     {
-        //isSwitching = true;
-
-        // Play weapon put-away animation (optional)
-        Transform currentWeapon = transform.GetChild(prevIndex);
-        Animator currentAnimator = currentWeapon.GetComponent<Animator>();
-
-        if (currentAnimator != null)
+        foreach (Transform weapon in transform)
         {
-            currentAnimator.SetTrigger("putAway");
-
-            yield return new WaitUntil(() => currentAnimator.GetCurrentAnimatorStateInfo(0).IsName("putAway") &&
-                                            currentAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f); // Using 0.99f for safety
-
-
-            //while (currentAnimator.IsInTransition(0) || currentAnimator.IsInTransition(1))
-            //{
-            //    yield return null;
-            //}
-
-            // Wait until animation is done
-            //float animationDuration = currentAnimator.GetCurrentAnimatorStateInfo(0).length;
-            //yield return new WaitForSeconds(animationDuration);
+            weapon.gameObject.SetActive(false);
         }
+    }
+
+    IEnumerator SwitchWeaponRoutine()
+    {
+        yield return SetWeaponDeactive();
 
         // Switch weapon
         SetWeaponActive();
-
-        // Optionally: play draw animation on new weapon
-        /*Transform newWeapon = transform.GetChild(currentWeaponIndex);
-        Animator newAnimator = newWeapon.GetComponent<Animator>();
-        if (newAnimator != null)
-        {
-            newAnimator.SetTrigger("Draw");
-        }
-
-        isSwitching = false;*/
     }
+    IEnumerator SetWeaponDeactive()
+    {
+        Transform weapon = transform.GetChild(previousWeaponIndex);
+        Animator animator = weapon.GetComponent<Animator>();
+        animator.SetTrigger("putAway");
 
+        yield return new WaitWhile(() => animator.IsInTransition(0));
+        yield return new WaitWhile(() => (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f));
+
+        weapon.gameObject.SetActive(false);
+    }
     void SetWeaponActive()
     {
-        int weaponIndex = 0;
-
-        foreach (Transform weapon in transform)
-        {
-            if (weaponIndex == currentWeaponIndex)
-            {
-                weapon.gameObject.SetActive(true);
-            }
-            else
-            {
-                weapon.gameObject.SetActive(false);
-            }
-
-            weaponIndex++;
-        }
+        Transform weapon = transform.GetChild(previousWeaponIndex);
+        weapon.gameObject.SetActive(true);
+        Animator animator = weapon.GetComponent<Animator>(); 
+        animator.Rebind();
+        animator.Update(0f);
+        animator.SetTrigger("pullOut");
     }
 
     void ProcessKeyInput()
@@ -96,7 +74,7 @@ public class WeaponSwitcher : MonoBehaviour
     {
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            if (currentWeaponIndex >= transform.childCount -1)
+            if (currentWeaponIndex >= transform.childCount - 1)
             {
                 currentWeaponIndex = 0;
             }
