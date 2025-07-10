@@ -13,7 +13,7 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void TakeDamage(float damage)
@@ -23,5 +23,10 @@ public class PlayerHealth : MonoBehaviour
         {
             GetComponent<DeathHandler>().HandleDeath();
         }
+    }
+
+    public void RecoverHealth(float amount)
+    {
+        health += amount;
     }
 }

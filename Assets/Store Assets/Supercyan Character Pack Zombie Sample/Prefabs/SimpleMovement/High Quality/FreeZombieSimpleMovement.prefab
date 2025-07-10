@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FreeZombieSimpleMovement
       objectReference: {fileID: 0}
+    - target: {fileID: 6930373436760084395, guid: 86954bd586b5cbc4380a87a05acbf57f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6930373436760183745, guid: 86954bd586b5cbc4380a87a05acbf57f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 1.0605477

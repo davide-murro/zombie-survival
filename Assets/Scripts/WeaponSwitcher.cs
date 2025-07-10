@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WeaponSwitcher : MonoBehaviour
@@ -20,8 +21,49 @@ public class WeaponSwitcher : MonoBehaviour
 
         if (previousWeaponIndex != currentWeaponIndex)
         {
-            SetWeaponActive();
+            StartCoroutine(SwitchWeaponRoutine(previousWeaponIndex, currentWeaponIndex));
+            //SetWeaponActive();
         }
+    }
+
+    IEnumerator SwitchWeaponRoutine(int prevIndex, int newIndex)
+    {
+        //isSwitching = true;
+
+        // Play weapon put-away animation (optional)
+        Transform currentWeapon = transform.GetChild(prevIndex);
+        Animator currentAnimator = currentWeapon.GetComponent<Animator>();
+
+        if (currentAnimator != null)
+        {
+            currentAnimator.SetTrigger("putAway");
+
+            yield return new WaitUntil(() => currentAnimator.GetCurrentAnimatorStateInfo(0).IsName("putAway") &&
+                                            currentAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f); // Using 0.99f for safety
+
+
+            //while (currentAnimator.IsInTransition(0) || currentAnimator.IsInTransition(1))
+            //{
+            //    yield return null;
+            //}
+
+            // Wait until animation is done
+            //float animationDuration = currentAnimator.GetCurrentAnimatorStateInfo(0).length;
+            //yield return new WaitForSeconds(animationDuration);
+        }
+
+        // Switch weapon
+        SetWeaponActive();
+
+        // Optionally: play draw animation on new weapon
+        /*Transform newWeapon = transform.GetChild(currentWeaponIndex);
+        Animator newAnimator = newWeapon.GetComponent<Animator>();
+        if (newAnimator != null)
+        {
+            newAnimator.SetTrigger("Draw");
+        }
+
+        isSwitching = false;*/
     }
 
     void SetWeaponActive()
