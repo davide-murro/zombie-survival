@@ -5,17 +5,33 @@ public class WeaponSwitcher : MonoBehaviour
 {
     [SerializeField] int currentWeaponIndex = 0;
     int previousWeaponIndex;
+    bool isSwitching;
+    struct Pose
+    {
+        public Vector3 localPosition;
+        public Quaternion localRotation;
+        public Vector3 localScale;
+    }
+    Pose[] initialRootPoses;
+
+
+    void Awake()
+    {
+        InitRootPoses();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         DisableAllWeapon();
-        SetWeaponActive();
+        SetWeaponActive(currentWeaponIndex);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isSwitching) return;
+
         previousWeaponIndex = currentWeaponIndex;
 
         ProcessKeyInput();
@@ -23,8 +39,31 @@ public class WeaponSwitcher : MonoBehaviour
 
         if (previousWeaponIndex != currentWeaponIndex)
         {
-            StartCoroutine(SwitchWeaponRoutine());
+            StartCoroutine(SwitchWeaponRoutine(previousWeaponIndex, currentWeaponIndex));
         }
+    }
+
+    void InitRootPoses()
+    {
+        int childCount = transform.childCount;
+        initialRootPoses = new Pose[childCount];
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform weapon = transform.GetChild(i);
+            initialRootPoses[i] = new Pose
+            {
+                localPosition = weapon.localPosition,
+                localRotation = weapon.localRotation,
+                localScale = weapon.localScale
+            };
+        }
+    }
+    void RestoreRootPose(int weaponIndex)
+    {
+        Transform weapon = transform.GetChild(weaponIndex);
+        weapon.localPosition = initialRootPoses[weaponIndex].localPosition;
+        weapon.localRotation = initialRootPoses[weaponIndex].localRotation;
+        weapon.localScale = initialRootPoses[weaponIndex].localScale;
     }
 
     void DisableAllWeapon()
@@ -35,16 +74,17 @@ public class WeaponSwitcher : MonoBehaviour
         }
     }
 
-    IEnumerator SwitchWeaponRoutine()
+    IEnumerator SwitchWeaponRoutine(int prevWeaponIndex, int nextWeaponIndex)
     {
-        yield return SetWeaponDeactive();
-
-        // Switch weapon
-        SetWeaponActive();
+        isSwitching = true;
+        yield return SetWeaponDeactive(prevWeaponIndex);
+        SetWeaponActive(nextWeaponIndex);
+        isSwitching = false;
     }
-    IEnumerator SetWeaponDeactive()
+    IEnumerator SetWeaponDeactive(int weaponIndex)
     {
-        Transform weapon = transform.GetChild(previousWeaponIndex);
+        Transform weapon = transform.GetChild(weaponIndex);
+
         Animator animator = weapon.GetComponent<Animator>();
         animator.SetTrigger("putAway");
 
@@ -53,11 +93,14 @@ public class WeaponSwitcher : MonoBehaviour
 
         weapon.gameObject.SetActive(false);
     }
-    void SetWeaponActive()
+    void SetWeaponActive(int weaponIndex)
     {
-        Transform weapon = transform.GetChild(previousWeaponIndex);
+        RestoreRootPose(weaponIndex);
+
+        Transform weapon = transform.GetChild(weaponIndex);
         weapon.gameObject.SetActive(true);
-        Animator animator = weapon.GetComponent<Animator>(); 
+
+        Animator animator = weapon.GetComponent<Animator>();
         animator.Rebind();
         animator.Update(0f);
         animator.SetTrigger("pullOut");

@@ -3469,6 +3469,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5009663632005230203, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5014540594284922364, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3575,6 +3579,10 @@ PrefabInstance:
       objectReference: {fileID: 195560809}
     - target: {fileID: 7595003162228702706, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
       propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8047811091101946695, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8088728124497785729, guid: 1fa9efef769e08b4c89aff4e0dcb12ec, type: 3}

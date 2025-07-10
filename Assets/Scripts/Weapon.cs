@@ -35,11 +35,6 @@ public class Weapon : MonoBehaviour
 
     [HideInInspector] public bool canShoot = true;
 
-    // These variables will store the desired default transform values
-    Vector3 defaultPosition;
-    Quaternion defaultRotation;
-    Vector3 defaultLocalScale;
-
     float nextFireTime = 0f;
     bool isAiming = false;
     float currentWeight = 0f;
@@ -50,10 +45,6 @@ public class Weapon : MonoBehaviour
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
         animator = GetComponent<Animator>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
-
-        defaultPosition = transform.localPosition;
-        defaultRotation = transform.localRotation;
-        defaultLocalScale = transform.localScale;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -87,15 +78,6 @@ public class Weapon : MonoBehaviour
 
         // ammo
         DisplayAmmo();
-    }
-
-    void OnEnable()
-    {
-        //transform.position = defaultPosition;
-        //transform.rotation = defaultRotation;
-        transform.localPosition = defaultPosition;
-        transform.localRotation = defaultRotation;
-        transform.localScale = defaultLocalScale;
     }
 
     void UpdateAim()
