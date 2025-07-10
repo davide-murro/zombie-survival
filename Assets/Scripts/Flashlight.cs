@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    [SerializeField] float lightDecay = 0.1f;
+    [SerializeField] float lightDecay = 0.4f;
     [SerializeField] float angleDecay = 1f;
     [SerializeField] float minAngle = 40f;
     [SerializeField] float deltaSpotAngle = 5f;
