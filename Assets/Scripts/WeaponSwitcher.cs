@@ -4,43 +4,79 @@ public class WeaponSwitcher : MonoBehaviour
 {
     [SerializeField] int currentWeaponIndex = 0;
 
+    struct Pose
+    {
+        public Vector3 localPosition;
+        public Quaternion localRotation;
+    }
+
+    Pose[] initialRootPoses;
+
+    void Awake()
+    {
+        int childCount = transform.childCount;
+        initialRootPoses = new Pose[childCount];
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform weapon = transform.GetChild(i);
+            initialRootPoses[i] = new Pose
+            {
+                localPosition = weapon.localPosition,
+                localRotation = weapon.localRotation
+            };
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetWeaponActive();
+        ApplyWeaponStates();
     }
 
     // Update is called once per frame
     void Update()
     {
-        int previousWeaponIndex = currentWeaponIndex;
-
+        int previous = currentWeaponIndex;
         ProcessKeyInput();
         ProcessScrollWheelInput();
-
-        if (previousWeaponIndex != currentWeaponIndex)
+        if (previous != currentWeaponIndex)
         {
-            SetWeaponActive();
+            ApplyWeaponStates();
         }
     }
 
-    void SetWeaponActive()
+    void ApplyWeaponStates()
     {
-        int weaponIndex = 0;
-
-        foreach (Transform weapon in transform)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            if (weaponIndex == currentWeaponIndex)
+            Transform weapon = transform.GetChild(i);
+            bool makeActive = i == currentWeaponIndex;
+            weapon.gameObject.SetActive(makeActive);
+
+            if (makeActive)
             {
-                weapon.gameObject.SetActive(true);
+                if (weapon.TryGetComponent<Animator>(out var anim))
+                {
+                    anim.Play("Idle", 0, 0f);
+                    anim.Update(0f);
+                }
+                else
+                {
+                    RestoreRootPose(weapon, i);
+                }
             }
             else
             {
-                weapon.gameObject.SetActive(false);
+                RestoreRootPose(weapon, i);
             }
-
-            weaponIndex++;
         }
+    }
+
+    void RestoreRootPose(Transform weapon, int index)
+    {
+        //weapon.localPosition = initialRootPoses[index].localPosition;
+        //weapon.localRotation = initialRootPoses[index].localRotation;
+        weapon.SetLocalPositionAndRotation(initialRootPoses[index].localPosition, initialRootPoses[index].localRotation);
     }
 
     void ProcessKeyInput()
