@@ -31,6 +31,7 @@ public class Weapon : MonoBehaviour
 
     CinemachineCamera cinemachineCamera;
     CinemachineImpulseSource impulseSource;    // impulse for recoil
+    WeaponMagazine weaponMagazine;    // magazine ammo
     Animator animator;
 
     [HideInInspector] public bool canShoot = true;
@@ -43,8 +44,9 @@ public class Weapon : MonoBehaviour
     void Awake()
     {
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
-        animator = GetComponent<Animator>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        weaponMagazine = GetComponent<WeaponMagazine>();
+        animator = GetComponent<Animator>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -76,6 +78,12 @@ public class Weapon : MonoBehaviour
             Shoot();
         }
 
+        // reload logic
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
+
         // ammo
         DisplayAmmo();
     }
@@ -89,7 +97,7 @@ public class Weapon : MonoBehaviour
         {
             targetWeight = 1f;
             crossHairCanvas.gameObject.SetActive(false);
-            targetAimZoom = aimZoom; 
+            targetAimZoom = aimZoom;
         }
         else
         {
@@ -115,11 +123,11 @@ public class Weapon : MonoBehaviour
         // check ammo
         if (ammoType != AmmoType.None)
         {
-            if (ammoSlot.GetCurrentAmmo(ammoType) <= 0) return;
+            if (weaponMagazine.GetCurrentAmmo() <= 0) return;
 
             int ammoToUse = ammoPerShoot;
-            if (ammoSlot.GetCurrentAmmo(ammoType) - ammoToUse < 0) ammoToUse = ammoSlot.GetCurrentAmmo(ammoType);
-            ammoSlot.ReduceCurrentAmmo(ammoType, ammoToUse);
+            if (weaponMagazine.GetCurrentAmmo() - ammoToUse < 0) ammoToUse = weaponMagazine.GetCurrentAmmo();
+            weaponMagazine.UseAmmo(ammoToUse);
         }
 
         // animation
@@ -131,6 +139,19 @@ public class Weapon : MonoBehaviour
         PlayMuzzleFlash();
 
         nextFireTime = Time.time + fireRate;
+    }
+
+    void Reload()
+    {
+        if (ammoType != AmmoType.None)
+        {
+            if (ammoSlot.GetCurrentAmmo(ammoType) <= 0) return;
+
+            int ammoToReload = weaponMagazine.GetCapacity() - weaponMagazine.GetCurrentAmmo();
+            if (ammoSlot.GetCurrentAmmo(ammoType) - ammoToReload < 0) ammoToReload = ammoSlot.GetCurrentAmmo(ammoType);
+            ammoSlot.ReduceCurrentAmmo(ammoType, ammoToReload);
+            weaponMagazine.ReloadAmmo(ammoToReload);
+        }
     }
 
     void ProcessRaycast()
@@ -180,10 +201,11 @@ public class Weapon : MonoBehaviour
 
     void DisplayAmmo()
     {
-        if (ammoSlot)
+        if (ammoType != AmmoType.None)
         {
             int currentAmmo = ammoSlot.GetCurrentAmmo(ammoType);
-            ammoTextbox.text = currentAmmo.ToString();
+            int weaponMagazineAmmo = weaponMagazine.GetCurrentAmmo();
+            ammoTextbox.text = $"{weaponMagazineAmmo} | {currentAmmo}";
         }
         else
         {
