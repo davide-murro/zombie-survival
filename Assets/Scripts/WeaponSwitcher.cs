@@ -6,12 +6,14 @@ public class WeaponSwitcher : MonoBehaviour
     [SerializeField] int currentWeaponIndex = 0;
     int previousWeaponIndex;
     bool isSwitching;
+
     struct Pose
     {
         public Vector3 localPosition;
         public Quaternion localRotation;
         public Vector3 localScale;
     }
+
     Pose[] initialRootPoses;
 
 
@@ -58,6 +60,7 @@ public class WeaponSwitcher : MonoBehaviour
             };
         }
     }
+
     void RestoreRootPose(int weaponIndex)
     {
         Transform weapon = transform.GetChild(weaponIndex);
@@ -81,6 +84,7 @@ public class WeaponSwitcher : MonoBehaviour
         SetWeaponActive(nextWeaponIndex);
         isSwitching = false;
     }
+
     IEnumerator SetWeaponDeactive(int weaponIndex)
     {
         Transform weapon = transform.GetChild(weaponIndex);
@@ -93,6 +97,7 @@ public class WeaponSwitcher : MonoBehaviour
 
         weapon.gameObject.SetActive(false);
     }
+
     void SetWeaponActive(int weaponIndex)
     {
         RestoreRootPose(weaponIndex);
@@ -113,6 +118,7 @@ public class WeaponSwitcher : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha3)) currentWeaponIndex = 2;
         else if (Input.GetKeyDown(KeyCode.Alpha4)) currentWeaponIndex = 3;
     }
+
     void ProcessScrollWheelInput()
     {
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
