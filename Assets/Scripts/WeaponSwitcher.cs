@@ -92,6 +92,7 @@ public class WeaponSwitcher : MonoBehaviour
         Animator animator = weapon.GetComponent<Animator>();
         animator.SetTrigger("putAway");
 
+        yield return null; // Wait one frame for the Animator to process the trigger
         yield return new WaitWhile(() => animator.IsInTransition(0));
         yield return new WaitWhile(() => (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f));
 

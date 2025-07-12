@@ -4,7 +4,7 @@ public class WeaponMagazine : MonoBehaviour
 {
     [SerializeField] int capacity = 20;
 
-    public int ammoAmount = 0;
+    public int ammoAmount = 20;
 
     public int GetCapacity()
     {
