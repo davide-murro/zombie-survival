@@ -1,9 +1,16 @@
+using StarterAssets;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] float health = 100f;
 
+    SceneLoader sceneLoader;
+
+    void Awake()
+    {
+        sceneLoader = FindFirstObjectByType<SceneLoader>();
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -21,7 +28,7 @@ public class PlayerHealth : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            GetComponent<DeathHandler>().HandleDeath();
+            sceneLoader.GameOver();
         }
     }
 
